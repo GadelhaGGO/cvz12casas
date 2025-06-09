@@ -1,0 +1,534 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cavaleiros do Zodíaco - 12 Casas</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            display: flex;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #1a1a2e, #16213e);
+            color: #fff;
+            overflow: hidden;
+        }
+        
+        /* Container de signos */
+        .signos-container {
+            width: 30%;
+            min-width: 120px;
+            height: 100vh;
+            overflow-y: auto;
+            background: rgba(0, 0, 0, 0.7);
+            padding: 10px 0;
+            border-right: 2px solid #e1b12c;
+            box-shadow: 3px 0 10px rgba(0, 0, 0, 0.5);
+            z-index: 10;
+        }
+        
+        .signos-header {
+            padding: 15px 10px;
+            text-align: center;
+            background: rgba(225, 177, 44, 0.2);
+            border-bottom: 1px solid #e1b12c;
+            margin-bottom: 10px;
+        }
+        
+        .signos-header h1 {
+            font-size: 1.2rem;
+            color: #e1b12c;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+        
+        .signo-item {
+            display: flex;
+            align-items: center;
+            padding: 15px 10px;
+            margin: 8px 5px;
+            color: #fff;
+            background: rgba(50, 50, 70, 0.5);
+            border-left: 4px solid transparent;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+        
+        .signo-item:hover {
+            background: rgba(80, 80, 120, 0.6);
+            transform: translateX(5px);
+        }
+        
+        .signo-item.active {
+            border-left: 4px solid #e1b12c;
+            background: rgba(80, 80, 120, 0.8);
+            box-shadow: 0 0 10px rgba(225, 177, 44, 0.5);
+        }
+        
+        .casa-numero {
+            font-weight: bold;
+            margin-right: 12px;
+            color: #e1b12c;
+            width: 25px;
+            height: 25px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(0, 0, 0, 0.4);
+            border-radius: 50%;
+            font-size: 0.9rem;
+        }
+        
+        .signo-simbolo {
+            font-size: 28px;
+            margin-right: 15px;
+            width: 40px;
+            text-align: center;
+            text-shadow: 0 0 8px rgba(225, 177, 44, 0.8);
+        }
+        
+        .signo-nome {
+            font-size: 1.1rem;
+            font-weight: 500;
+        }
+        
+        /* Container de informações */
+        .info-container {
+            width: 70%;
+            height: 100vh;
+            padding: 20px;
+            overflow-y: auto;
+            position: relative;
+            background: url('https://images.unsplash.com/photo-1534447677768-be436bb09401?q=80&w=1000') no-repeat center center;
+            background-size: cover;
+        }
+        
+        .info-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(10, 10, 20, 0.85);
+            z-index: 1;
+        }
+        
+        .info-content {
+            position: relative;
+            z-index: 2;
+        }
+        
+        .cavaleiro-foto {
+            width: 100%;
+            height: 250px;
+            margin-bottom: 25px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 10px;
+            overflow: hidden;
+            border: 2px solid #e1b12c;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.7);
+            background: rgba(30, 30, 50, 0.7);
+        }
+        
+        .cavaleiro-foto img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: cover;
+        }
+        
+        .cavaleiro-foto .placeholder {
+            color: #888;
+            font-size: 1rem;
+            text-align: center;
+            padding: 20px;
+        }
+        
+        .cavaleiro-info {
+            background: rgba(20, 20, 35, 0.8);
+            padding: 20px;
+            border-radius: 10px;
+            border: 1px solid #444;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+        }
+        
+        .cavaleiro-info h2 {
+            color: #e1b12c;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #e1b12c;
+            font-size: 1.8rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .info-item {
+            margin-bottom: 15px;
+            padding-bottom: 15px;
+            border-bottom: 1px dashed #444;
+        }
+        
+        .info-item:last-child {
+            border-bottom: none;
+        }
+        
+        .info-item strong {
+            color: #e1b12c;
+            display: block;
+            margin-bottom: 5px;
+            font-size: 1.1rem;
+        }
+        
+        /* Responsividade para celular */
+        @media (max-width: 768px) {
+            body {
+                flex-direction: column;
+            }
+            
+            .signos-container {
+                width: 100%;
+                height: auto;
+                max-height: 35vh;
+                overflow-x: auto;
+                overflow-y: hidden;
+                display: flex;
+                flex-direction: row;
+                padding: 10px;
+                border-right: none;
+                border-bottom: 2px solid #e1b12c;
+            }
+            
+            .signos-header {
+                display: none;
+            }
+            
+            .signo-item {
+                flex-direction: column;
+                min-width: 90px;
+                padding: 10px 5px;
+                margin: 0 8px;
+                border-left: none;
+                border-bottom: 3px solid transparent;
+            }
+            
+            .signo-item:hover {
+                transform: translateY(-5px);
+            }
+            
+            .signo-item.active {
+                border-left: none;
+                border-bottom: 3px solid #e1b12c;
+            }
+            
+            .signo-simbolo {
+                margin-right: 0;
+                margin-bottom: 8px;
+                font-size: 24px;
+            }
+            
+            .signo-nome {
+                font-size: 0.9rem;
+                text-align: center;
+            }
+            
+            .info-container {
+                width: 100%;
+                height: 65vh;
+            }
+            
+            .cavaleiro-foto {
+                height: 200px;
+            }
+        }
+        
+        /* Barra de rolagem personalizada */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        
+        ::-webkit-scrollbar-track {
+            background: rgba(0, 0, 0, 0.2);
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: #e1b12c;
+            border-radius: 4px;
+        }
+        
+        ::-webkit-scrollbar-thumb:hover {
+            background: #c9970c;
+        }
+        
+        .zodiac-title {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            font-size: 2.5rem;
+            color: rgba(225, 177, 44, 0.2);
+            transform: rotate(15deg);
+            z-index: 3;
+        }
+    </style>
+</head>
+<body>
+    <div class="signos-container">
+        <div class="signos-header">
+            <h1><i class="fas fa-star"></i> 12 Casas do Zodíaco</h1>
+        </div>
+        <!-- Lista de signos em ordem (Áries primeiro) -->
+        <div class="signo-item active" onclick="mostrarCavaleiro(1)">
+            <div class="casa-numero">1</div>
+            <div class="signo-simbolo">♈</div>
+            <div class="signo-nome">Áries</div>
+        </div>
+        <div class="signo-item" onclick="mostrarCavaleiro(2)">
+            <div class="casa-numero">2</div>
+            <div class="signo-simbolo">♉</div>
+            <div class="signo-nome">Touro</div>
+        </div>
+        <div class="signo-item" onclick="mostrarCavaleiro(3)">
+            <div class="casa-numero">3</div>
+            <div class="signo-simbolo">♊</div>
+            <div class="signo-nome">Gêmeos</div>
+        </div>
+        <div class="signo-item" onclick="mostrarCavaleiro(4)">
+            <div class="casa-numero">4</div>
+            <div class="signo-simbolo">♋</div>
+            <div class="signo-nome">Câncer</div>
+        </div>
+        <div class="signo-item" onclick="mostrarCavaleiro(5)">
+            <div class="casa-numero">5</div>
+            <div class="signo-simbolo">♌</div>
+            <div class="signo-nome">Leão</div>
+        </div>
+        <div class="signo-item" onclick="mostrarCavaleiro(6)">
+            <div class="casa-numero">6</div>
+            <div class="signo-simbolo">♍</div>
+            <div class="signo-nome">Virgem</div>
+        </div>
+        <div class="signo-item" onclick="mostrarCavaleiro(7)">
+            <div class="casa-numero">7</div>
+            <div class="signo-simbolo">♎</div>
+            <div class="signo-nome">Libra</div>
+        </div>
+        <div class="signo-item" onclick="mostrarCavaleiro(8)">
+            <div class="casa-numero">8</div>
+            <div class="signo-simbolo">♏</div>
+            <div class="signo-nome">Escorpião</div>
+        </div>
+        <div class="signo-item" onclick="mostrarCavaleiro(9)">
+            <div class="casa-numero">9</div>
+            <div class="signo-simbolo">♐</div>
+            <div class="signo-nome">Sagitário</div>
+        </div>
+        <div class="signo-item" onclick="mostrarCavaleiro(10)">
+            <div class="casa-numero">10</div>
+            <div class="signo-simbolo">♑</div>
+            <div class="signo-nome">Capricórnio</div>
+        </div>
+        <div class="signo-item" onclick="mostrarCavaleiro(11)">
+            <div class="casa-numero">11</div>
+            <div class="signo-simbolo">♒</div>
+            <div class="signo-nome">Aquário</div>
+        </div>
+        <div class="signo-item" onclick="mostrarCavaleiro(12)">
+            <div class="casa-numero">12</div>
+            <div class="signo-simbolo">♓</div>
+            <div class="signo-nome">Peixes</div>
+        </div>
+    </div>
+    
+    <div class="info-container">
+        <div class="zodiac-title">ZODÍACO</div>
+        <div class="info-content">
+            <div class="cavaleiro-foto">
+                <div class="placeholder">Clique em um signo para ver o cavaleiro</div>
+            </div>
+            
+            <div class="cavaleiro-info">
+                <h2>Selecione um cavaleiro</h2>
+                <div class="info-item"><strong>CASA</strong><span id="info-casa">-</span></div>
+                <div class="info-item"><strong>SIGNO</strong><span id="info-signo">-</span></div>
+                <div class="info-item"><strong>CAVALEIRO</strong><span id="info-nome">-</span></div>
+                <div class="info-item"><strong>IDADE</strong><span id="info-idade">-</span></div>
+                <div class="info-item"><strong>ARMADURA</strong><span id="info-armadura">-</span></div>
+                <div class="info-item"><strong>TÉCNICAS</strong><span id="info-tecnicas">-</span></div>
+                <div class="info-item"><strong>HISTÓRIA</strong><span id="info-historia">-</span></div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // Dados dos cavaleiros
+        const cavaleiros = {
+            1: {
+                casa: "Primeira Casa",
+                signo: "Áries",
+                nome: "Mu de Áries",
+                idade: "20 anos",
+                armadura: "Armadura de Ouro de Áries",
+                tecnicas: "Extinção Estelar, Muralha de Cristal, Telecinese",
+                historia: "Mu é o Cavaleiro de Ouro da Casa de Áries e antigo discípulo do Grande Mestre. Ele é conhecido por suas habilidades de reparar armaduras e criar barreiras poderosas. Mu é um dos cavaleiros mais sábios e poderosos do Santuário.",
+                imagem: "https://a.storyblok.com/f/178900/640x484/8972f4ae6f/2192d808c4ea07c382e2be28a4334fd91582949236_full.jpg/m/640x484"
+            },
+            2: {
+                casa: "Segunda Casa",
+                signo: "Touro",
+                nome: "Aldebaran de Touro",
+                idade: "20 anos",
+                armadura: "Armadura de Ouro de Touro",
+                tecnicas: "Grande Chifre, Titãs Gigantes",
+                historia: "Aldebaran é o Cavaleiro de Ouro da Casa de Touro. Conhecido por sua força física impressionante e personalidade direta. Ele protege a segunda casa com bravura e é um dos cavaleiros mais leais à deusa Atena.",
+                imagem: "https://i.pinimg.com/736x/b3/65/54/b36554496929cfc91ecdbe22b7aaffbe.jpg"
+            },
+            3: {
+                casa: "Terceira Casa",
+                signo: "Gêmeos",
+                nome: "Saga de Gêmeos",
+                idade: "28 anos",
+                armadura: "Armadura de Ouro de Gêmeos",
+                tecnicas: "Explosão Galáctica, Outra Dimensão, Ilusão Demoníaca",
+                historia: "Saga é o Cavaleiro de Ouro da Casa de Gêmeos. Ele possui uma personalidade dividida entre o bem e o mal, sendo um dos vilões mais poderosos da série. Saga assumiu o controle do Santuário fingindo ser o Grande Mestre.",
+                imagem: "https://i.pinimg.com/736x/b3/d3/84/b3d3846ea17c02c3148b220d5baeac18.jpg"
+            },
+            4: {
+                casa: "Quarta Casa",
+                signo: "Câncer",
+                nome: "Máscara da Morte",
+                idade: "23 anos",
+                armadura: "Armadura de Ouro de Câncer",
+                tecnicas: "Ondas do Inferno, Regresso do Inferno",
+                historia: "Máscara da Morte é o Cavaleiro de Ouro da Casa de Câncer. Ele possui uma personalidade cruel e gosta de colecionar almas de suas vítimas. Deathmask acredita que o caminho para a salvação é através da morte.",
+                imagem: "https://i.pinimg.com/736x/38/ef/68/38ef680c91cbde526fca3181a31f3718.jpg"
+            },
+            5: {
+                casa: "Quinta Casa",
+                signo: "Leão",
+                nome: "Aiolia de Leão",
+                idade: "20 anos",
+                armadura: "Armadura de Ouro de Leão",
+                tecnicas: "Relâmpago de Plasma, Garra do Leão",
+                historia: "Aiolia é o Cavaleiro de Ouro da Casa de Leão. Irmão mais novo de Aiolos de Sagitário, é um dos cavaleiros mais leais à deusa Atena. Aiolia é conhecido por sua velocidade e ataques poderosos.",
+                imagem: "https://i.pinimg.com/736x/e5/05/0d/e5050d3043ec8a3fe6e7724b3f753110.jpg"
+            },
+            6: {
+                casa: "Sexta Casa",
+                signo: "Virgem",
+                nome: "Shaka de Virgem",
+                idade: "20 anos",
+                armadura: "Armadura de Ouro de Virgem",
+                tecnicas: "Tesouro do Céu, Ilusão de Buda, Círculo dos Seis Sentidos",
+                historia: "Shaka é o Cavaleiro de Ouro da Casa de Virgem, considerado o homem mais próximo dos deuses. Possui um cosmo extremamente poderoso e é capaz de fechar todos os seus sentidos para alcançar um estado superior.",
+                imagem: "https://i.pinimg.com/736x/3f/52/5f/3f525fd0f753ef4feecffd93523295c6.jpg"
+            },
+            7: {
+                casa: "Sétima Casa",
+                signo: "Libra",
+                nome: "Dohko de Libra",
+                idade: "261 anos",
+                armadura: "Armadura de Ouro de Libra",
+                tecnicas: "Cólera dos Cem Dragões, Rozan Shō Ryū Ha",
+                historia: "Dohko é o Cavaleiro de Ouro da Casa de Libra e antigo companheiro de Shion de Áries. É o mais velho e sábio dos Cavaleiros de Ouro. Dohko vive nas Cinco Montanhas Velhas da China, treinando novos cavaleiros.",
+                imagem: "https://i.pinimg.com/736x/27/82/0d/27820d703a68c5ab254635b3e8e5829f.jpg"
+            },
+            8: {
+                casa: "Oitava Casa",
+                signo: "Escorpião",
+                nome: "Milo de Escorpião",
+                idade: "20 anos",
+                armadura: "Armadura de Ouro de Escorpião",
+                tecnicas: "Agulha Escarlate, Golpe da Agulha Escarlate",
+                historia: "Milo é o Cavaleiro de Ouro da Casa de Escorpião. Conhecido por suas técnicas precisas e mortais que atingem os pontos vitais do oponente. Apesar de sua aparência séria, Milo tem um forte senso de justiça.",
+                imagem: "https://i.pinimg.com/736x/c1/20/57/c120579fe9e10223cfa53f76218062ec.jpg"
+            },
+            9: {
+                casa: "Nona Casa",
+                signo: "Sagitário",
+                nome: "Aiolos de Sagitário",
+                idade: "14 anos (quando morreu)",
+                armadura: "Armadura de Ouro de Sagitário",
+                tecnicas: "Flecha de Sagitário, Meteoro de Pégaso",
+                historia: "Aiolos foi o Cavaleiro de Ouro da Casa de Sagitário e irmão mais velho de Aiolia de Leão. Morreu protegendo a bebê Atena das garras do Grande Mestre traidor. Sua armadura é lendária por conceder grande poder a quem a veste com justiça.",
+                imagem: "https://i.pinimg.com/736x/e5/05/0d/e5050d3043ec8a3fe6e7724b3f753110.jpg"
+            },
+            10: {
+                casa: "Décima Casa",
+                signo: "Capricórnio",
+                nome: "Shura de Capricórnio",
+                idade: "23 anos",
+                armadura: "Armadura de Ouro de Capricórnio",
+                tecnicas: "Excalibur, Salto da Capela",
+                historia: "Shura é o Cavaleiro de Ouro da Casa de Capricórnio. Acredita que a justiça está na força e na espada que lhe foi concedida por Atena. Shura possui as pernas mais poderosas de todos os cavaleiros.",
+                imagem: "https://i.pinimg.com/736x/af/99/5b/af995b42d9be08d0b3124e3dcb512881.jpg"
+            },
+            11: {
+                casa: "Décima Primeira Casa",
+                signo: "Aquário",
+                nome: "Camus de Aquário",
+                idade: "20 anos",
+                armadura: "Armadura de Ouro de Aquário",
+                tecnicas: "Pó de Diamante, Execução Aurora, Círculo de Gelo",
+                historia: "Camus é o Cavaleiro de Ouro da Casa de Aquário e mestre de Hyoga de Cisne. Especialista em técnicas de gelo extremo. Camus é conhecido por sua personalidade fria e racional, mas com um forte senso de dever.",
+                imagem: "https://i.pinimg.com/736x/67/00/6d/67006df6da050ba05b34718daa8bdbe2.jpg"
+            },
+            12: {
+                casa: "Décima Segunda Casa",
+                signo: "Peixes",
+                nome: "Afrodite de Peixes",
+                idade: "22 anos",
+                armadura: "Armadura de Ouro de Peixes",
+                tecnicas: "Rosa Sangrenta, Rosa Piranha, Rosa Real",
+                historia: "Afrodite é o Cavaleiro de Ouro da Casa de Peixes. Conhecido por sua beleza e por usar rosas como armas mortais. Ele acredita que a beleza é a coisa mais importante no mundo e luta para preservá-la.",
+                imagem: "https://i.pinimg.com/736x/b9/89/01/b9890184419b0a36d0276db5fab89be1.jpg"
+            }
+        };
+        
+        // Função para mostrar informações do cavaleiro
+        function mostrarCavaleiro(casa) {
+            // Remove a classe 'active' de todos os itens
+            document.querySelectorAll('.signo-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            
+            // Adiciona a classe 'active' ao item clicado
+            document.querySelectorAll('.signo-item')[casa-1].classList.add('active');
+            
+            // Obtém os dados do cavaleiro
+            const cavaleiro = cavaleiros[casa];
+            
+            // Atualiza as informações
+            document.getElementById('info-casa').textContent = cavaleiro.casa;
+            document.getElementById('info-signo').textContent = cavaleiro.signo;
+            document.getElementById('info-nome').textContent = cavaleiro.nome;
+            document.getElementById('info-idade').textContent = cavaleiro.idade;
+            document.getElementById('info-armadura').textContent = cavaleiro.armadura;
+            document.getElementById('info-tecnicas').textContent = cavaleiro.tecnicas;
+            document.getElementById('info-historia').textContent = cavaleiro.historia;
+            
+            // Atualiza a foto
+            const fotoContainer = document.querySelector('.cavaleiro-foto');
+            if (cavaleiro.imagem) {
+                fotoContainer.innerHTML = `<img src="${cavaleiro.imagem}" alt="${cavaleiro.nome}">`;
+            } else {
+                fotoContainer.innerHTML = `<div class="placeholder">Imagem de ${cavaleiro.nome}</div>`;
+            }
+        }
+        
+        // Mostra o primeiro cavaleiro (Áries) ao carregar a página
+        window.onload = function() {
+            mostrarCavaleiro(1);
+        };
+    </script>
+</body>
+</html>
